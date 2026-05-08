@@ -8,6 +8,7 @@ An iOS application that displays real-time stock market data using the [YH Finan
 - **Stock Detail**: Tapping a stock shows detailed information including trading data, market cap, P/E ratios, and company profile.
 - **Auto-Refresh**: The stock list automatically updates every 8 seconds to reflect the latest market data.
 - **Search**: Filter stocks by name or symbol using the built-in search bar.
+- **Smart Change Calculation**: When the API doesn't provide change values directly, they are computed from current price and previous close.
 
 ## Screenshots
 
@@ -25,9 +26,9 @@ Stock Market/
 │   └── APIConfig.swift              # API endpoints, keys, and URL builder
 ├── Models/
 │   ├── Stock.swift                  # MarketQuote, FormattedValue models
-│   └── StockDetail.swift            # StockDetailResponse, StockPrice, SummaryDetail, SummaryProfile
+│   └── StockDetail.swift            # StockQuoteDetail, SummaryProfile, StockDetailData
 ├── Services/
-│   ├── NetworkService.swift         # Generic network layer with protocol
+│   ├── NetworkService.swift         # Generic network layer with URLSessionDataProvider protocol
 │   └── StockAPIService.swift        # Stock-specific API service with protocol
 ├── DI/
 │   └── DependencyContainer.swift    # Dependency injection container
@@ -41,6 +42,8 @@ Stock Market/
 │   ├── StockListView.swift          # Main list screen with search
 │   ├── StockRowView.swift           # Individual stock row cell
 │   └── StockDetailView.swift        # Detail screen with trading data
+├── Preview Content/
+│   └── PreviewHelpers.swift         # Sample data and mock services for SwiftUI previews
 └── Stock_MarketApp.swift            # App entry point
 ```
 
@@ -51,7 +54,7 @@ Stock Market/
 | **Models** | Codable structs representing API responses |
 | **Services** | Protocol-based networking (easily mockable for testing) |
 | **ViewModels** | Business logic, state management, data transformation |
-| **Views** | SwiftUI views, purely declarative UI |
+| **Views** | SwiftUI views with previews for all states |
 | **Coordinator** | Centralized navigation management |
 | **DI** | Dependency injection container for service creation |
 
@@ -66,19 +69,24 @@ Stock Market/
 
 | Technology | Usage |
 |-----------|-------|
-| **SwiftUI** | Declarative UI framework |
+| **SwiftUI** | Declarative UI framework with previews |
 | **Swift Concurrency** | `async/await` for network calls, `Task` for auto-refresh |
 | **Combine** | Reactive search filtering with `$searchText.combineLatest($stocks)` |
 | **Swift Testing** | Unit testing framework |
 
 ## API
 
-The app consumes the [YH Finance API](https://rapidapi.com/apidojo/api/yh-finance) via RapidAPI:
+The app consumes the [YH Finance API](https://rapidapi.com/apidojo/api/yh-finance) via RapidAPI.
+
+**Host**: `apidojo-yahoo-finance-v1.p.rapidapi.com`
 
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /market/v2/get-summary` | Fetches market summary with stock quotes |
-| `GET /stock/v2/get-summary` | Fetches detailed data for a specific stock |
+| `GET /market/v2/get-quotes` | Fetches detailed quote data for a specific stock |
+| `GET /stock/v3/get-profile` | Fetches company profile information |
+
+> **Note**: The stock detail screen combines data from two endpoints (quote + profile) to provide a comprehensive view.
 
 ### Configuration
 
@@ -114,13 +122,20 @@ enum APIConfig {
 
 ## Testing
 
-The project includes unit tests covering:
+The project includes **76 unit tests** organized into separate files by feature:
 
-- **Model Tests**: Property accessors, computed properties, fallback values.
-- **ViewModel Tests**: Data fetching, error handling, search filtering, auto-refresh lifecycle.
-- **DI Tests**: Container correctly creates ViewModels with injected dependencies.
-- **Config Tests**: URL construction and header configuration.
-- **NetworkError Tests**: Error description formatting.
+| Test File | Coverage |
+|-----------|----------|
+| `MarketQuoteTests` | Model properties, computed change fallback, FormattedValue |
+| `ModelTests` | StockQuoteDetail display name, formatters, market cap, volume |
+| `StockListViewModelTests` | Fetching, search filtering, auto-refresh lifecycle |
+| `StockDetailViewModelTests` | Detail fetching, error handling, symbol storage |
+| `StockAPIServiceTests` | Market summary, stock detail, error propagation |
+| `NetworkServiceTests` | HTTP errors, decoding, headers, network failures |
+| `AppCoordinatorTests` | Navigation path, route management, factory methods |
+| `DependencyContainerTests` | Container creates ViewModels with injected dependencies |
+| `NetworkErrorTests` | Error description formatting |
+| `APIConfigTests` | URL construction and header configuration |
 
 Run tests via Xcode (`⌘+U`) or from the command line:
 
@@ -130,7 +145,21 @@ xcodebuild test -scheme "Stock Market" -destination "platform=iOS Simulator,name
 
 ### Test Architecture
 
-Tests use a `MockStockAPIService` that conforms to `StockAPIServiceProtocol`, allowing full control over responses without network calls.
+- **`TestHelpers.swift`**: Shared `MockStockAPIService` and mock extensions used across all test files.
+- **`MockURLSessionDataProvider`**: Injected into `NetworkService` via `URLSessionDataProvider` protocol for reliable async testing.
+- **`MockNetworkService`**: Injected into `StockAPIService` for service-layer testing.
+- All tests use protocol-based mocks with no external dependencies.
+
+## Previews
+
+All views include SwiftUI previews with multiple states:
+
+- **StockRowView**: Positive change, negative change, full list
+- **StockListView**: Loaded list, loading state, error state
+- **StockDetailView**: Full detail, loading state, error state
+- **CoordinatorView**: Full app navigation
+
+Preview data is provided by `PreviewHelpers.swift` with `PreviewStockAPIService` and sample models.
 
 ## Dependencies
 
@@ -161,6 +190,13 @@ The project uses a feature-branch workflow:
 | `feature/coordinator` | Coordinator pattern for navigation |
 | `feature/views` | SwiftUI views and app entry point |
 | `feature/unit-tests` | Unit test suite |
+| `feature/readme` | Project documentation |
+| `feature/api-refactor` | API layer refactor for working endpoints |
+| `improvement/network-testability` | URLSessionDataProvider for testable networking |
+| `feature/test-separation` | Tests split into feature-based files |
+| `feature/view-previews` | SwiftUI previews for all views |
+| `fix/price-change-fallback` | Computed change values when API returns null |
+| `chore/project-config` | Gitignore and Xcode shared scheme |
 
 ## License
 
