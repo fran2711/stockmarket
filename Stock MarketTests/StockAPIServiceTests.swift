@@ -130,6 +130,20 @@ struct StockAPIServiceTests {
         #expect(detail.profile?.sector == "Technology")
     }
 
+    @Test func fetchStockDetailReturnsNilProfileWhenProfileFails() async throws {
+        let mockNetwork = MockNetworkService()
+        mockNetwork.results["QuoteResponse"] = QuoteResponse(
+            quoteResponse: QuoteResponseBody(result: [StockQuoteDetail.mock(symbol: "AAPL")])
+        )
+        // No ProfileResponse mock → profile fetch will throw → profile should be nil
+
+        let service = StockAPIService(networkService: mockNetwork)
+        let detail = try await service.fetchStockDetail(symbol: "AAPL")
+
+        #expect(detail.quote.symbol == "AAPL")
+        #expect(detail.profile == nil)
+    }
+
     @Test func fetchStockDetailThrowsWhenQuoteIsEmpty() async {
         let mockNetwork = MockNetworkService()
         mockNetwork.results["QuoteResponse"] = QuoteResponse(
