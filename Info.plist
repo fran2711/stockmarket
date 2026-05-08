@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>RAPID_API_KEY</key>
+	<string>655d5f2a80mshb99c6a1567a4eedp176785jsnfda7df238980</string>
+	<key>RAPID_API_HOST</key>
+	<string>apidojo-yahoo-finance-v1.p.rapidapi.com</string>
+</dict>
+</plist>
