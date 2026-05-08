@@ -32,6 +32,8 @@ struct StockDetailView: View {
                 detailContent(detail)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemGroupedBackground))
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

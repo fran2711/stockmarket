@@ -8,9 +8,21 @@
 import Foundation
 
 enum APIConfig {
-    static let baseURL = "https://apidojo-yahoo-finance-v1.p.rapidapi.com"
-    static let apiKey = "655d5f2a80mshb99c6a1567a4eedp176785jsnfda7df238980"
-    static let apiHost = "apidojo-yahoo-finance-v1.p.rapidapi.com"
+    static let baseURL = "https://\(apiHost)"
+
+    static var apiKey: String {
+        guard let key = Bundle.main.object(forInfoDictionaryKey: "RAPID_API_KEY") as? String, !key.isEmpty else {
+            fatalError("RAPID_API_KEY not found in Info.plist")
+        }
+        return key
+    }
+
+    static var apiHost: String {
+        guard let host = Bundle.main.object(forInfoDictionaryKey: "RAPID_API_HOST") as? String, !host.isEmpty else {
+            fatalError("RAPID_API_HOST not found in Info.plist")
+        }
+        return host
+    }
 
     static var headers: [String: String] {
         [
