@@ -22,6 +22,8 @@ struct StockListView: View {
                 stockListContent
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
         .navigationTitle("Markets")
         .searchable(text: $viewModel.searchText, prompt: "Search stocks")
         .onAppear {
@@ -40,8 +42,11 @@ struct StockListView: View {
                 StockRowView(stock: stock)
             }
             .buttonStyle(.plain)
+            .listRowBackground(Color(.systemBackground))
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color(.systemBackground))
         .refreshable {
             viewModel.fetchStocks()
         }
