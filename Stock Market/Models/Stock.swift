@@ -27,6 +27,7 @@ struct MarketQuote: Codable, Identifiable {
     let regularMarketPrice: FormattedValue?
     let regularMarketChange: FormattedValue?
     let regularMarketChangePercent: FormattedValue?
+    let regularMarketPreviousClose: FormattedValue?
 
     var id: String { symbol }
 
@@ -43,19 +44,39 @@ struct MarketQuote: Codable, Identifiable {
     }
 
     var priceChange: Double {
-        regularMarketChange?.raw ?? 0.0
+        if let change = regularMarketChange?.raw {
+            return change
+        }
+        guard let price = regularMarketPrice?.raw,
+              let previousClose = regularMarketPreviousClose?.raw else { return 0.0 }
+        return price - previousClose
     }
 
     var priceChangeFormatted: String {
-        regularMarketChange?.fmt ?? "N/A"
+        if let fmt = regularMarketChange?.fmt {
+            return fmt
+        }
+        guard regularMarketPrice?.raw != nil,
+              regularMarketPreviousClose?.raw != nil else { return "N/A" }
+        return String(format: "%+.2f", priceChange)
     }
 
     var priceChangePercent: Double {
-        regularMarketChangePercent?.raw ?? 0.0
+        if let percent = regularMarketChangePercent?.raw {
+            return percent
+        }
+        guard let previousClose = regularMarketPreviousClose?.raw,
+              previousClose != 0 else { return 0.0 }
+        return (priceChange / previousClose) * 100.0
     }
 
     var priceChangePercentFormatted: String {
-        regularMarketChangePercent?.fmt ?? "N/A"
+        if let fmt = regularMarketChangePercent?.fmt {
+            return fmt
+        }
+        guard regularMarketPrice?.raw != nil,
+              regularMarketPreviousClose?.raw != nil else { return "N/A" }
+        return String(format: "%+.2f%%", priceChangePercent)
     }
 
     var isPriceChangePositive: Bool {

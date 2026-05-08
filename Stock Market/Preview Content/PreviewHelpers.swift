@@ -42,7 +42,8 @@ extension MarketQuote {
         fullExchangeName: "NasdaqGS",
         regularMarketPrice: FormattedValue(raw: 213.25, fmt: "213.25"),
         regularMarketChange: FormattedValue(raw: 4.32, fmt: "+4.32"),
-        regularMarketChangePercent: FormattedValue(raw: 2.07, fmt: "+2.07%")
+        regularMarketChangePercent: FormattedValue(raw: 2.07, fmt: "+2.07%"),
+        regularMarketPreviousClose: FormattedValue(raw: 208.93, fmt: "208.93")
     )
 
     static let sampleNegative = MarketQuote(
@@ -51,7 +52,8 @@ extension MarketQuote {
         fullExchangeName: "NasdaqGS",
         regularMarketPrice: FormattedValue(raw: 284.50, fmt: "284.50"),
         regularMarketChange: FormattedValue(raw: -8.75, fmt: "-8.75"),
-        regularMarketChangePercent: FormattedValue(raw: -2.98, fmt: "-2.98%")
+        regularMarketChangePercent: FormattedValue(raw: -2.98, fmt: "-2.98%"),
+        regularMarketPreviousClose: FormattedValue(raw: 293.25, fmt: "293.25")
     )
 
     static let sampleList: [MarketQuote] = [
@@ -63,7 +65,8 @@ extension MarketQuote {
             fullExchangeName: "NasdaqGS",
             regularMarketPrice: FormattedValue(raw: 178.90, fmt: "178.90"),
             regularMarketChange: FormattedValue(raw: 1.45, fmt: "+1.45"),
-            regularMarketChangePercent: FormattedValue(raw: 0.82, fmt: "+0.82%")
+            regularMarketChangePercent: FormattedValue(raw: 0.82, fmt: "+0.82%"),
+            regularMarketPreviousClose: FormattedValue(raw: 177.45, fmt: "177.45")
         ),
         MarketQuote(
             symbol: "MSFT",
@@ -71,7 +74,8 @@ extension MarketQuote {
             fullExchangeName: "NasdaqGS",
             regularMarketPrice: FormattedValue(raw: 452.10, fmt: "452.10"),
             regularMarketChange: FormattedValue(raw: -2.30, fmt: "-2.30"),
-            regularMarketChangePercent: FormattedValue(raw: -0.51, fmt: "-0.51%")
+            regularMarketChangePercent: FormattedValue(raw: -0.51, fmt: "-0.51%"),
+            regularMarketPreviousClose: FormattedValue(raw: 454.40, fmt: "454.40")
         ),
         MarketQuote(
             symbol: "AMZN",
@@ -79,7 +83,8 @@ extension MarketQuote {
             fullExchangeName: "NasdaqGS",
             regularMarketPrice: FormattedValue(raw: 195.75, fmt: "195.75"),
             regularMarketChange: FormattedValue(raw: 3.10, fmt: "+3.10"),
-            regularMarketChangePercent: FormattedValue(raw: 1.61, fmt: "+1.61%")
+            regularMarketChangePercent: FormattedValue(raw: 1.61, fmt: "+1.61%"),
+            regularMarketPreviousClose: FormattedValue(raw: 192.65, fmt: "192.65")
         )
     ]
 }

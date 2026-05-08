@@ -53,7 +53,8 @@ extension MarketQuote {
         change: Double = 2.5,
         changeFormatted: String = "2.50",
         changePercent: Double = 1.7,
-        changePercentFormatted: String = "1.70%"
+        changePercentFormatted: String = "1.70%",
+        previousClose: Double? = nil
     ) -> MarketQuote {
         MarketQuote(
             symbol: symbol,
@@ -61,7 +62,8 @@ extension MarketQuote {
             fullExchangeName: "NASDAQ",
             regularMarketPrice: FormattedValue(raw: price, fmt: priceFormatted),
             regularMarketChange: FormattedValue(raw: change, fmt: changeFormatted),
-            regularMarketChangePercent: FormattedValue(raw: changePercent, fmt: changePercentFormatted)
+            regularMarketChangePercent: FormattedValue(raw: changePercent, fmt: changePercentFormatted),
+            regularMarketPreviousClose: previousClose.map { FormattedValue(raw: $0, fmt: String(format: "%.2f", $0)) }
         )
     }
 }
