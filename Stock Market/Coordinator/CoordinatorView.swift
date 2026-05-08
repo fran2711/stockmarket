@@ -32,3 +32,9 @@ struct CoordinatorView: View {
         .environmentObject(coordinator)
     }
 }
+
+// MARK: - Preview
+
+#Preview {
+    CoordinatorView(container: PreviewDependencyContainer())
+}

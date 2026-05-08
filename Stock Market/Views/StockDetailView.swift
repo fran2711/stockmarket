@@ -178,3 +178,31 @@ struct StockDetailView: View {
         .shadow(color: .black.opacity(0.05), radius: 5)
     }
 }
+
+// MARK: - Previews
+
+#Preview("Stock Detail") {
+    let service = PreviewStockAPIService()
+    let viewModel = StockDetailViewModel(symbol: "AAPL", stockAPIService: service)
+    NavigationStack {
+        StockDetailView(viewModel: viewModel)
+    }
+}
+
+#Preview("Loading State") {
+    let service = PreviewStockAPIService()
+    let viewModel = StockDetailViewModel(symbol: "AAPL", stockAPIService: service)
+    let _ = { viewModel.isLoading = true }()
+    return NavigationStack {
+        StockDetailView(viewModel: viewModel)
+    }
+}
+
+#Preview("Error State") {
+    let service = PreviewStockAPIService()
+    let viewModel = StockDetailViewModel(symbol: "AAPL", stockAPIService: service)
+    let _ = { viewModel.errorMessage = "Failed to load stock details." }()
+    return NavigationStack {
+        StockDetailView(viewModel: viewModel)
+    }
+}
