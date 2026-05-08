@@ -64,3 +64,11 @@ struct StockRowView: View {
     }
     .listStyle(.plain)
 }
+
+#Preview("Stock List - Dark") {
+    List(MarketQuote.sampleList) { stock in
+        StockRowView(stock: stock)
+    }
+    .listStyle(.plain)
+    .preferredColorScheme(.dark)
+}
