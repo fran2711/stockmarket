@@ -79,6 +79,18 @@ struct StockListView: View {
     }
 }
 
+#Preview("Stock List - Dark") {
+    let container = PreviewDependencyContainer()
+    let coordinator = AppCoordinator(container: container)
+    NavigationStack {
+        StockListView(
+            viewModel: coordinator.makeStockListViewModel(),
+            coordinator: coordinator
+        )
+    }
+    .preferredColorScheme(.dark)
+}
+
 #Preview("Loading State") {
     let service = PreviewStockAPIService()
     let viewModel = StockListViewModel(stockAPIService: service)

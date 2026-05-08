@@ -50,6 +50,7 @@ struct StockDetailView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
     }
 
     private func priceHeader(_ quote: StockQuoteDetail) -> some View {
@@ -83,9 +84,9 @@ struct StockDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 5)
+        .shadow(color: Color.primary.opacity(0.05), radius: 5)
     }
 
     private func tradingDataSection(_ quote: StockQuoteDetail) -> some View {
@@ -115,9 +116,9 @@ struct StockDetailView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 5)
+        .shadow(color: Color.primary.opacity(0.05), radius: 5)
     }
 
     private func dataCell(title: String, value: String?) -> some View {
@@ -173,9 +174,9 @@ struct StockDetailView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 5)
+        .shadow(color: Color.primary.opacity(0.05), radius: 5)
     }
 }
 
@@ -187,6 +188,15 @@ struct StockDetailView: View {
     NavigationStack {
         StockDetailView(viewModel: viewModel)
     }
+}
+
+#Preview("Stock Detail - Dark") {
+    let service = PreviewStockAPIService()
+    let viewModel = StockDetailViewModel(symbol: "AAPL", stockAPIService: service)
+    NavigationStack {
+        StockDetailView(viewModel: viewModel)
+    }
+    .preferredColorScheme(.dark)
 }
 
 #Preview("Loading State") {
