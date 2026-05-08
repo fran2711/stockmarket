@@ -184,4 +184,75 @@ struct StockQuoteDetailTests {
         )
         #expect(quote.formattedVolume == "5.0K")
     }
+
+    @Test func formattedVolumeSmall() {
+        let quote = StockQuoteDetail(
+            symbol: nil, shortName: nil, longName: nil,
+            currency: nil, fullExchangeName: nil, regularMarketPrice: nil,
+            regularMarketChange: nil, regularMarketChangePercent: nil,
+            regularMarketVolume: 500, marketCap: nil,
+            regularMarketDayHigh: nil, regularMarketDayLow: nil, regularMarketOpen: nil,
+            regularMarketPreviousClose: nil, fiftyTwoWeekHigh: nil,
+            fiftyTwoWeekLow: nil, trailingPE: nil, forwardPE: nil,
+            dividendYield: nil, beta: nil, averageDailyVolume3Month: nil
+        )
+        #expect(quote.formattedVolume == "500")
+    }
+
+    @Test func formattedVolumeReturnsNAWhenNil() {
+        let quote = StockQuoteDetail(
+            symbol: nil, shortName: nil, longName: nil,
+            currency: nil, fullExchangeName: nil, regularMarketPrice: nil,
+            regularMarketChange: nil, regularMarketChangePercent: nil,
+            regularMarketVolume: nil, marketCap: nil,
+            regularMarketDayHigh: nil, regularMarketDayLow: nil, regularMarketOpen: nil,
+            regularMarketPreviousClose: nil, fiftyTwoWeekHigh: nil,
+            fiftyTwoWeekLow: nil, trailingPE: nil, forwardPE: nil,
+            dividendYield: nil, beta: nil, averageDailyVolume3Month: nil
+        )
+        #expect(quote.formattedVolume == "N/A")
+    }
+
+    @Test func formattedMarketCapMillions() {
+        let quote = StockQuoteDetail(
+            symbol: nil, shortName: nil, longName: nil,
+            currency: nil, fullExchangeName: nil, regularMarketPrice: nil,
+            regularMarketChange: nil, regularMarketChangePercent: nil,
+            regularMarketVolume: nil, marketCap: 750_000_000,
+            regularMarketDayHigh: nil, regularMarketDayLow: nil, regularMarketOpen: nil,
+            regularMarketPreviousClose: nil, fiftyTwoWeekHigh: nil,
+            fiftyTwoWeekLow: nil, trailingPE: nil, forwardPE: nil,
+            dividendYield: nil, beta: nil, averageDailyVolume3Month: nil
+        )
+        #expect(quote.formattedMarketCap == "750.00M")
+    }
+
+    @Test func formattedMarketCapReturnsNAWhenNil() {
+        let quote = StockQuoteDetail(
+            symbol: nil, shortName: nil, longName: nil,
+            currency: nil, fullExchangeName: nil, regularMarketPrice: nil,
+            regularMarketChange: nil, regularMarketChangePercent: nil,
+            regularMarketVolume: nil, marketCap: nil,
+            regularMarketDayHigh: nil, regularMarketDayLow: nil, regularMarketOpen: nil,
+            regularMarketPreviousClose: nil, fiftyTwoWeekHigh: nil,
+            fiftyTwoWeekLow: nil, trailingPE: nil, forwardPE: nil,
+            dividendYield: nil, beta: nil, averageDailyVolume3Month: nil
+        )
+        #expect(quote.formattedMarketCap == "N/A")
+    }
+
+    @Test func formattedChangeReturnsNAWhenNil() {
+        let quote = StockQuoteDetail(
+            symbol: nil, shortName: nil, longName: nil,
+            currency: nil, fullExchangeName: nil, regularMarketPrice: nil,
+            regularMarketChange: nil, regularMarketChangePercent: nil,
+            regularMarketVolume: nil, marketCap: nil,
+            regularMarketDayHigh: nil, regularMarketDayLow: nil, regularMarketOpen: nil,
+            regularMarketPreviousClose: nil, fiftyTwoWeekHigh: nil,
+            fiftyTwoWeekLow: nil, trailingPE: nil, forwardPE: nil,
+            dividendYield: nil, beta: nil, averageDailyVolume3Month: nil
+        )
+        #expect(quote.formattedChange == "N/A")
+        #expect(quote.formattedChangePercent == "N/A")
+    }
 }
