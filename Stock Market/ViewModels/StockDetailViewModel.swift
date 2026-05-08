@@ -10,7 +10,7 @@ import Combine
 
 @MainActor
 final class StockDetailViewModel: ObservableObject {
-    @Published var detail: StockDetailResponse?
+    @Published var detail: StockDetailData?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 

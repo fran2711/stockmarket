@@ -8,9 +8,9 @@
 import Foundation
 
 enum APIConfig {
-    static let baseURL = "https://yh-finance.p.rapidapi.com"
-    static let apiKey = "YOUR_RAPIDAPI_KEY_HERE"
-    static let apiHost = "yh-finance.p.rapidapi.com"
+    static let baseURL = "https://apidojo-yahoo-finance-v1.p.rapidapi.com"
+    static let apiKey = "655d5f2a80mshb99c6a1567a4eedp176785jsnfda7df238980"
+    static let apiHost = "apidojo-yahoo-finance-v1.p.rapidapi.com"
 
     static var headers: [String: String] {
         [
@@ -21,14 +21,17 @@ enum APIConfig {
 
     enum Endpoint {
         case marketSummary(region: String)
-        case stockSummary(symbol: String)
+        case stockQuote(symbol: String, region: String)
+        case stockProfile(symbol: String)
 
         var path: String {
             switch self {
             case .marketSummary:
                 return "/market/v2/get-summary"
-            case .stockSummary:
-                return "/stock/v2/get-summary"
+            case .stockQuote:
+                return "/market/v2/get-quotes"
+            case .stockProfile:
+                return "/stock/v3/get-profile"
             }
         }
 
@@ -36,11 +39,13 @@ enum APIConfig {
             switch self {
             case .marketSummary(let region):
                 return [URLQueryItem(name: "region", value: region)]
-            case .stockSummary(let symbol):
+            case .stockQuote(let symbol, let region):
                 return [
-                    URLQueryItem(name: "symbol", value: symbol),
-                    URLQueryItem(name: "region", value: "US")
+                    URLQueryItem(name: "symbols", value: symbol),
+                    URLQueryItem(name: "region", value: region)
                 ]
+            case .stockProfile(let symbol):
+                return [URLQueryItem(name: "symbol", value: symbol)]
             }
         }
 

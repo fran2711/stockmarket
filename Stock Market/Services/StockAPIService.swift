@@ -9,7 +9,7 @@ import Foundation
 
 protocol StockAPIServiceProtocol {
     func fetchMarketSummary(region: String) async throws -> [MarketQuote]
-    func fetchStockDetail(symbol: String) async throws -> StockDetailResponse
+    func fetchStockDetail(symbol: String) async throws -> StockDetailData
 }
 
 final class StockAPIService: StockAPIServiceProtocol {
@@ -27,10 +27,22 @@ final class StockAPIService: StockAPIServiceProtocol {
         return response.marketSummaryAndSparkResponse?.result ?? []
     }
 
-    func fetchStockDetail(symbol: String) async throws -> StockDetailResponse {
-        guard let url = APIConfig.Endpoint.stockSummary(symbol: symbol).url else {
+    func fetchStockDetail(symbol: String) async throws -> StockDetailData {
+        guard let quoteURL = APIConfig.Endpoint.stockQuote(symbol: symbol, region: "US").url else {
             throw NetworkError.invalidURL
         }
-        return try await networkService.fetch(StockDetailResponse.self, from: url)
+
+        let quoteResponse = try await networkService.fetch(QuoteResponse.self, from: quoteURL)
+        guard let quote = quoteResponse.quoteResponse?.result?.first else {
+            throw NetworkError.invalidResponse
+        }
+
+        var profile: SummaryProfile?
+        if let profileURL = APIConfig.Endpoint.stockProfile(symbol: symbol).url {
+            let profileResponse = try? await networkService.fetch(ProfileResponse.self, from: profileURL)
+            profile = profileResponse?.quoteSummary?.result?.first?.summaryProfile
+        }
+
+        return StockDetailData(quote: quote, profile: profile)
     }
 }
