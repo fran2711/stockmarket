@@ -30,14 +30,20 @@ enum NetworkError: Error, LocalizedError {
     }
 }
 
+protocol URLSessionDataProvider: Sendable {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
+}
+
+extension URLSession: URLSessionDataProvider {}
+
 protocol NetworkServiceProtocol {
     func fetch<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T
 }
 
 final class NetworkService: NetworkServiceProtocol {
-    private let session: URLSession
+    private let session: URLSessionDataProvider
 
-    init(session: URLSession = .shared) {
+    init(session: URLSessionDataProvider = URLSession.shared) {
         self.session = session
     }
 
