@@ -41,3 +41,26 @@ struct StockRowView: View {
         .padding(.vertical, 4)
     }
 }
+
+// MARK: - Previews
+
+#Preview("Positive Change") {
+    List {
+        StockRowView(stock: .samplePositive)
+    }
+    .listStyle(.plain)
+}
+
+#Preview("Negative Change") {
+    List {
+        StockRowView(stock: .sampleNegative)
+    }
+    .listStyle(.plain)
+}
+
+#Preview("Stock List") {
+    List(MarketQuote.sampleList) { stock in
+        StockRowView(stock: stock)
+    }
+    .listStyle(.plain)
+}

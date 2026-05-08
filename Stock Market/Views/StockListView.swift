@@ -65,3 +65,38 @@ struct StockListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
+
+// MARK: - Previews
+
+#Preview("Stock List") {
+    let container = PreviewDependencyContainer()
+    let coordinator = AppCoordinator(container: container)
+    NavigationStack {
+        StockListView(
+            viewModel: coordinator.makeStockListViewModel(),
+            coordinator: coordinator
+        )
+    }
+}
+
+#Preview("Loading State") {
+    let service = PreviewStockAPIService()
+    let viewModel = StockListViewModel(stockAPIService: service)
+    let container = PreviewDependencyContainer()
+    let coordinator = AppCoordinator(container: container)
+    NavigationStack {
+        StockListView(viewModel: viewModel, coordinator: coordinator)
+    }
+}
+
+#Preview("Error State") {
+    let container = PreviewDependencyContainer()
+    let coordinator = AppCoordinator(container: container)
+    let viewModel = StockListViewModel(stockAPIService: container.stockAPIService)
+    let _ = {
+        viewModel.errorMessage = "Unable to load stocks. Please check your connection."
+    }()
+    return NavigationStack {
+        StockListView(viewModel: viewModel, coordinator: coordinator)
+    }
+}
