@@ -15,12 +15,12 @@ struct StockDetailView: View {
             if viewModel.isLoading {
                 ProgressView("Loading details...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = viewModel.errorMessage {
+            } else if let errorMessage = viewModel.errorMessage {
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.largeTitle)
                         .foregroundStyle(.secondary)
-                    Text(error)
+                    Text(errorMessage)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     Button("Retry") {
@@ -39,14 +39,12 @@ struct StockDetailView: View {
         }
     }
 
-    private func detailContent(_ detail: StockDetailResponse) -> some View {
+    private func detailContent(_ detail: StockDetailData) -> some View {
         ScrollView {
             VStack(spacing: 20) {
-                priceHeader(detail.price)
-                if let summary = detail.summaryDetail {
-                    tradingDataSection(summary, price: detail.price)
-                }
-                if let profile = detail.summaryProfile {
+                priceHeader(detail.quote)
+                tradingDataSection(detail.quote)
+                if let profile = detail.profile {
                     profileSection(profile)
                 }
             }
@@ -54,34 +52,30 @@ struct StockDetailView: View {
         }
     }
 
-    private func priceHeader(_ price: StockPrice?) -> some View {
+    private func priceHeader(_ quote: StockQuoteDetail) -> some View {
         VStack(spacing: 8) {
-            Text(price?.displayName ?? viewModel.symbol)
+            Text(quote.displayName)
                 .font(.title2)
                 .fontWeight(.bold)
 
-            if let exchange = price?.exchangeName {
+            if let exchange = quote.fullExchangeName {
                 Text(exchange)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
-            Text(price?.regularMarketPrice?.fmt ?? "N/A")
+            Text(quote.formattedPrice)
                 .font(.system(size: 44, weight: .bold, design: .rounded))
 
-            if let priceChangeFormatted = price?.regularMarketChange?.fmt,
-               let priceChangePercentFormatted = price?.regularMarketChangePercent?.fmt {
-                let isPricePositive = price?.isPriceChangePositive ?? true
-                HStack(spacing: 4) {
-                    Image(systemName: isPricePositive ? "arrow.up.right" : "arrow.down.right")
-                    Text("\(priceChangeFormatted) (\(priceChangePercentFormatted))")
-                }
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundStyle(isPricePositive ? .green : .red)
+            HStack(spacing: 4) {
+                Image(systemName: quote.isPriceChangePositive ? "arrow.up.right" : "arrow.down.right")
+                Text("\(quote.formattedChange) (\(quote.formattedChangePercent))")
             }
+            .font(.title3)
+            .fontWeight(.semibold)
+            .foregroundStyle(quote.isPriceChangePositive ? .green : .red)
 
-            if let currency = price?.currency {
+            if let currency = quote.currency {
                 Text(currency)
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -94,7 +88,7 @@ struct StockDetailView: View {
         .shadow(color: .black.opacity(0.05), radius: 5)
     }
 
-    private func tradingDataSection(_ summary: SummaryDetail, price: StockPrice?) -> some View {
+    private func tradingDataSection(_ quote: StockQuoteDetail) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Trading Data")
                 .font(.headline)
@@ -103,19 +97,21 @@ struct StockDetailView: View {
                 GridItem(.flexible()),
                 GridItem(.flexible())
             ], spacing: 12) {
-                dataCell(title: "Open", value: summary.open?.fmt)
-                dataCell(title: "Previous Close", value: summary.previousClose?.fmt)
-                dataCell(title: "Day High", value: summary.dayHigh?.fmt)
-                dataCell(title: "Day Low", value: summary.dayLow?.fmt)
-                dataCell(title: "52W High", value: summary.fiftyTwoWeekHigh?.fmt)
-                dataCell(title: "52W Low", value: summary.fiftyTwoWeekLow?.fmt)
-                dataCell(title: "Volume", value: summary.volume?.fmt ?? price?.regularMarketVolume?.fmt)
-                dataCell(title: "Avg Volume", value: summary.averageVolume?.fmt)
-                dataCell(title: "Market Cap", value: summary.marketCap?.fmt ?? price?.marketCap?.fmt)
-                dataCell(title: "P/E (TTM)", value: summary.trailingPE?.fmt)
-                dataCell(title: "Forward P/E", value: summary.forwardPE?.fmt)
-                dataCell(title: "Dividend Yield", value: summary.dividendYield?.fmt)
-                dataCell(title: "Beta", value: summary.beta?.fmt)
+                dataCell(title: "Open", value: quote.regularMarketOpen.map { String(format: "%.2f", $0) })
+                dataCell(title: "Previous Close", value: quote.regularMarketPreviousClose.map { String(format: "%.2f", $0) })
+                dataCell(title: "Day High", value: quote.regularMarketDayHigh.map { String(format: "%.2f", $0) })
+                dataCell(title: "Day Low", value: quote.regularMarketDayLow.map { String(format: "%.2f", $0) })
+                dataCell(title: "52W High", value: quote.fiftyTwoWeekHigh.map { String(format: "%.2f", $0) })
+                dataCell(title: "52W Low", value: quote.fiftyTwoWeekLow.map { String(format: "%.2f", $0) })
+                dataCell(title: "Volume", value: quote.formattedVolume)
+                dataCell(title: "Avg Volume", value: quote.averageDailyVolume3Month.map {
+                    $0 >= 1_000_000 ? String(format: "%.2fM", Double($0) / 1_000_000.0) : "\($0)"
+                })
+                dataCell(title: "Market Cap", value: quote.formattedMarketCap)
+                dataCell(title: "P/E (TTM)", value: quote.trailingPE.map { String(format: "%.2f", $0) })
+                dataCell(title: "Forward P/E", value: quote.forwardPE.map { String(format: "%.2f", $0) })
+                dataCell(title: "Dividend Yield", value: quote.dividendYield.map { String(format: "%.2f%%", $0) })
+                dataCell(title: "Beta", value: quote.beta.map { String(format: "%.3f", $0) })
             }
         }
         .padding()
